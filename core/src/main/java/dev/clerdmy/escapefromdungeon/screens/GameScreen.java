@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.clerdmy.escapefromdungeon.Main;
 import dev.clerdmy.escapefromdungeon.entities.Player;
 import dev.clerdmy.escapefromdungeon.world.World;
@@ -16,6 +18,10 @@ public class GameScreen implements Screen {
     private Player player;
     private World world;
     private Main game;
+    private Viewport viewport;
+
+    private final float VIRTUAL_WIDTH = 800;
+    private final float VIRTUAL_HEIGHT = 600;
 
     public GameScreen(Main game) {
         this.game = game;
@@ -27,13 +33,17 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 600);
+        viewport = new FitViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);
+        viewport.apply();
+        camera.position.set(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2, 0);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        viewport.apply();
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -55,7 +65,10 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        camera.position.set(player.getX(), player.getY(), 0);
+    }
 
     @Override
     public void pause() {}
