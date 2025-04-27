@@ -5,34 +5,29 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import dev.clerdmy.escapefromdungeon.utils.Constants;
 import dev.clerdmy.escapefromdungeon.utils.Tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Level {
-    private int[][] matrix;
-    private List<Tile> tiles;
-    private Texture wallTexture;
+    private Tile[][] tiles;
+    private static final int SIZE = 32;
 
-    public Level(int[][] matrix) {
-        this.matrix = matrix;
-        this.tiles = new ArrayList<>();
-        this.wallTexture = new Texture("blue.png");
-        generateLevel();
+    public Level() {
+        tiles = new Tile[SIZE][SIZE];
     }
 
-    private void generateLevel() {
-        for (int y = 0; y < matrix.length; y++) {
-            for (int x = 0; x < matrix[y].length; x++) {
-                if (matrix[y][x] == 1) {
-                    tiles.add(new Tile(x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, wallTexture));
-                }
+    public void fillWithFloor(Texture floorTexture) {
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                tiles[x][y] = new Tile(x * Constants.TILE_SIZE, y * Constants.TILE_SIZE, floorTexture);
             }
         }
     }
 
     public void render(SpriteBatch batch) {
-        for (Tile tile : tiles) {
-            tile.render(batch);
+        for (int y = 0; y < SIZE; y++) {
+            for (int x = 0; x < SIZE; x++) {
+                if (tiles[x][y] != null) {
+                    tiles[x][y].render(batch);
+                }
+            }
         }
     }
 }

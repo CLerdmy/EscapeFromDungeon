@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dev.clerdmy.escapefromdungeon.Main;
 import dev.clerdmy.escapefromdungeon.entities.Player;
+import dev.clerdmy.escapefromdungeon.utils.Constants;
 import dev.clerdmy.escapefromdungeon.world.World;
 
 public class GameScreen implements Screen {
@@ -49,8 +50,8 @@ public class GameScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        player.render(batch);
         world.render(batch);
+        player.render(batch);
         batch.end();
 
         handleInput();
@@ -62,6 +63,22 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) player.move(-2, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.D)) player.move(2, 0);
         camera.position.set(player.getX(), player.getY(), 0);
+
+        float halfViewportWidth = camera.viewportWidth / 2;
+        float halfViewportHeight = camera.viewportHeight / 2;
+        float levelWidth = Constants.TILE_SIZE * 32;
+        float levelHeight = Constants.TILE_SIZE * 32;
+
+        if (camera.position.x - halfViewportWidth < 0)
+            camera.position.x = halfViewportWidth;
+        if (camera.position.x + halfViewportWidth > levelWidth)
+            camera.position.x = levelWidth - halfViewportWidth;
+
+        if (camera.position.y - halfViewportHeight < 0)
+            camera.position.y = halfViewportHeight;
+        if (camera.position.y + halfViewportHeight > levelHeight)
+            camera.position.y = levelHeight - halfViewportHeight;
+
     }
 
     @Override
